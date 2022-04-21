@@ -9,5 +9,22 @@ spec:
   image:
     application: confluentinc/cp-zookeeper:7.1.0
     init: confluentinc/confluent-init-container:2.3.0
-  dataVolumeCapacity: 10Gi
-  logVolumeCapacity: 10Gi
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx8000M"
+      - "-Xms5500M"
+  dataVolumeCapacity: 50Gi
+  logVolumeCapacity: 50Gi
+  storageClass:
+    name: cflt-storage
+  podTemplate:
+    resources:
+      requests:
+        cpu: "2"
+        memory: "8Gi"
+      limits:
+        cpu: "3"
+        memory: "10Gi"

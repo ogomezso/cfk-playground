@@ -9,7 +9,28 @@ spec:
   image:
     application: confluentinc/cp-enterprise-control-center:7.1.0
     init: confluentinc/confluent-init-container:2.3.0
-  dataVolumeCapacity: 10Gi
+  configOverrides:
+    server:
+      - confluent.metrics.reporter.topic.retention.ms=86400000
+      - confluent.metrics.reporter.topic.retention.bytes=522752000
+      - confluent.controlcenter.internal.topics.retention.ms=86400000 
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx16000M"
+      - "-Xms8000M"
+  dataVolumeCapacity: 250Gi
+  storageClass:
+    name: cflt-storage
+  podTemplate:
+    resources:
+      requests:
+        cpu: "4"
+        memory: "16Gi"
+      limits:
+        cpu: "8"
+        memory: "20Gi"
   dependencies:
     schemaRegistry:
       url: http://schemaregistry.confluent.svc.cluster.local:8081

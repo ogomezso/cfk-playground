@@ -9,15 +9,21 @@ spec:
   image:
     application: confluentinc/cp-kafka-rest:7.1.0
     init: confluentinc/confluent-init-container:2.3.0
-  dependencies:
-    schemaRegistry:
-      url: http://schemaregistry.confluent.svc.cluster.local:8081
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx16000M"
+      - "-Xms8000M"
   podTemplate:
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
-    podSecurityContext:
-      fsGroup: 1000
-      runAsUser: 1000
-      runAsNonRoot: true
+        cpu: "4"
+        memory: "16Gi"
+      limits:
+        cpu: "8"
+        memory: "20Gi"
+  dependencies:
+    schemaRegistry:
+      url: http://schemaregistry.confluent.svc.cluster.local:8081

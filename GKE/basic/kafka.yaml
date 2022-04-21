@@ -9,7 +9,24 @@ spec:
   image:
     application: confluentinc/cp-server:7.1.0
     init: confluentinc/confluent-init-container:2.3.0
-  dataVolumeCapacity: 10Gi
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx20000M"
+      - "-Xms10000M"
+  dataVolumeCapacity: 100Gi
+  storageClass:
+    name: cflt-storage
+  podTemplate:
+    resources:
+      requests:
+        cpu: "4"
+        memory: "16Gi"
+      limits:
+        cpu: "8"
+        memory: "20Gi"
   metricReporter:
     enabled: true
 
