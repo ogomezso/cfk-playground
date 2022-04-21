@@ -9,12 +9,20 @@ spec:
   image:
     application: confluentinc/cp-schema-registry:7.1.0
     init: confluentinc/confluent-init-container:2.3.0
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx4000M"
+      - "-Xms2000M"   
   podTemplate:
+    podSecurityContext: {}
+    serviceAccountName: confluent-for-kubernetes
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
-    podSecurityContext:
-      fsGroup: 1000
-      runAsUser: 1000
-      runAsNonRoot: true
+        cpu: "2"
+        memory: "4Gi"
+      limits:
+        cpu: "3"
+        memory: "6Gi"

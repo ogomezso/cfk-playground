@@ -9,18 +9,21 @@ spec:
   image:
     application: confluentinc/cp-ksqldb-server:7.1.0
     init: confluentinc/confluent-init-container:2.3.0
-  dataVolumeCapacity: 10Gi
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx20000M"
+      - "-Xms11000M"
+  dataVolumeCapacity: 100Gi
+  storageClass:
+    name: cflt-storage
   podTemplate:
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
-    probe:
-      liveness:
-        periodSeconds: 10
-        failureThreshold: 5
-        timeoutSeconds: 500 
-    podSecurityContext:
-      fsGroup: 1000
-      runAsUser: 1000
-      runAsNonRoot: true
+        cpu: "4"
+        memory: "20Gi"
+      limits:
+        cpu: "5"
+        memory: "24Gi"
