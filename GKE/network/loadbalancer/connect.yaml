@@ -1,0 +1,33 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Connect
+metadata:
+  name: connect
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-server-connect:7.1.0
+    init: confluentinc/confluent-init-container:2.3.0
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx16000M"
+      - "-Xms8000M"
+  podTemplate:
+    resources:
+      requests:
+        cpu: "4"
+        memory: "16Gi"
+      limits:
+        cpu: "5"
+        memory: "20Gi"
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka:9071
+  externalAccess:
+    type: loadBalancer
+    loadBalancer:
+       domain: confluent.svc.cluster.local

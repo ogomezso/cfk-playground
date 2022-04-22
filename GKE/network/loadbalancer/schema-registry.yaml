@@ -1,0 +1,32 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: schemaregistry
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-schema-registry:7.1.0
+    init: confluentinc/confluent-init-container:2.3.0
+  configOverrides:
+    jvm:
+      - "-XX:+HeapDumpOnOutOfMemoryError"
+      - "-XX:HeapDumpPath=/mnt/data/data0/head_dump.hprof"
+      - "-XX:+UseG1GC"
+      - "-Xmx4000M"
+      - "-Xms2000M"   
+  podTemplate:
+    podSecurityContext: {}
+    serviceAccountName: confluent-for-kubernetes
+    resources:
+      requests:
+        cpu: "2"
+        memory: "4Gi"
+      limits:
+        cpu: "3"
+        memory: "6Gi"
+  externalAccess:
+    type: loadBalancer
+    loadBalancer:
+       domain: confluent.svc.cluster.local
